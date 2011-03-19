@@ -1,0 +1,13 @@
+
+  <h1><%= @repo %></h1>
+  <ul>
+  <% @repo.commits.each do |commit| %>
+    <li><%= commit.message %></li>
+  <% end %>
+  </ul>
+  <ul>
+  <% @repo.tree.contents.each do |item| %>
+    <li><%= item.name %></li>
+  <% end %>
+  </ul>
+  <div><%= @repo.tree.contents.inspect %></div>
