@@ -4,31 +4,34 @@ require 'cgi'
 
 class MainTest < Test::Unit::TestCase
 
-  test "test goes ok" do
-    assert true
+  test "gets list" do
+    get '/'
+    check_ok
   end
 
-  def check_is_json
-    assert last_response.headers['Content-Type'] =~ /application\/json/
-    data = JSON.parse(last_response.body)
-    assert !data.nil?, 'deben ser datos json'
-    data
+  test "gets repo" do
+    get '/dummy'
+    check_ok
   end
 
-  def check_ok
-    assert (last_response.status == 200 or last_response.status == 304), "debería ser status 200 o 304, pero es status=#{last_response.status}" # \n-------------response body: #{last_response.body}\n-----------------"
+  test "gets tree" do
+    pend
   end
 
-  def check_redirection
-    assert_equal 302,last_response.status
+  test "gets commit" do
+    pend
   end
 
-  def check_is_default(data)
-    assert data['user']['is_default']==true, 'debe usar el default_user'
+  test "gets tag" do
+    pend
   end
 
-  def check_not_default(data)
-    assert data['user']['is_default']==false, 'no debe usar el default_user'
+  test "gets branch" do
+    pend
+  end
+
+  test "gets blob" do
+    pend
   end
 
 end

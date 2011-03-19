@@ -1,10 +1,30 @@
 Loaded suite -e
 Started
-.
+PPP..PP
 
-Finished in 0.000834322 seconds.
+  1) Pending: pended.
+test_gets_blob(MainTest)
+test/main_test.rb:34:in `block in <class:MainTest>'
 
-1 tests, 1 assertions, 0 failures, 0 errors, 0 pendings, 0 omissions, 0 notifications
-100% passed
+  2) Pending: pended.
+test_gets_branch(MainTest)
+test/main_test.rb:30:in `block in <class:MainTest>'
 
-1198.58 tests/s, 1198.58 assertions/s
+  3) Pending: pended.
+test_gets_commit(MainTest)
+test/main_test.rb:22:in `block in <class:MainTest>'
+
+  4) Pending: pended.
+test_gets_tag(MainTest)
+test/main_test.rb:26:in `block in <class:MainTest>'
+
+  5) Pending: pended.
+test_gets_tree(MainTest)
+test/main_test.rb:18:in `block in <class:MainTest>'
+
+Finished in 0.139292998 seconds.
+
+7 tests, 2 assertions, 0 failures, 0 errors, 5 pendings, 0 omissions, 0 notifications
+28.5714% passed
+
+50.25 tests/s, 14.36 assertions/s

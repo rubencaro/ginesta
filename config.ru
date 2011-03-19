@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'sinatra'
-# require 'app/main.rb'
 Encoding.default_external = 'utf-8'
 require File.dirname(__FILE__) + "/app/main.rb"
 

@@ -1,3 +1,4 @@
+# encoding: utf-8
 $LOAD_PATH << './app'
 
 require 'main'
@@ -19,6 +20,10 @@ ENV['RACK_ENV'] = 'test'
 # #Capybara.javascript_driver = :rack_test  #default driver when you using @javascript tag
 # #Capybara.default_driver = :rack_test
 
+# dummy repo for testing
+REPOS = {
+  :dummy => File.dirname(__FILE__) + '/dummy_repo',
+}
 
 class Test::Unit::TestCase
   include Rack::Test::Methods
@@ -33,5 +38,20 @@ class Test::Unit::TestCase
 #   def setup
 #     Capybara.app = Sinatra::Application.new
 #   end
+
+  def check_is_json
+    assert last_response.headers['Content-Type'] =~ /application\/json/
+    data = JSON.parse(last_response.body)
+    assert !data.nil?, 'deben ser datos json'
+    data
+  end
+
+  def check_ok
+    assert (last_response.status == 200 or last_response.status == 304), "debería ser status 200 o 304, pero es status=#{last_response.status}" # \n-------------response body: #{last_response.body}\n-----------------"
+  end
+
+  def check_redirection
+    assert_equal 302,last_response.status
+  end
 
 end

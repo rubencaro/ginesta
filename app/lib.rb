@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-def show_list
+def show_list(params)
   erubis :list
 end
 
