@@ -1,0 +1,10 @@
+Loaded suite -e
+Started
+.
+
+Finished in 0.000834322 seconds.
+
+1 tests, 1 assertions, 0 failures, 0 errors, 0 pendings, 0 omissions, 0 notifications
+100% passed
+
+1198.58 tests/s, 1198.58 assertions/s

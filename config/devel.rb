@@ -18,9 +18,3 @@ end
 def logger
   LOGGER
 end
-
-class ActiveRecord::Base
-  def logger
-    LOGGER
-  end
-end
