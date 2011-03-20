@@ -19,15 +19,18 @@ class MainTest < Test::Unit::TestCase
   end
 
   test "gets commit" do
-    pend
+    get '/dummy/commit/dbfe5bb026645d05aea4a3c3e4f8f33bd0423da3'
+    check_ok
   end
 
   test "gets tag" do
-    pend
+    get '/dummy/tag/0.1'
+    check_ok
   end
 
   test "gets branch" do
-    pend
+    get '/dummy/branch/master'
+    check_ok
   end
 
   test "gets blob" do
