@@ -55,7 +55,11 @@ check = {
   //capturar excepciones y mostrar los errores por consola
   visit: function(url,browser,callback){
     browser.visit(check.server + url, function (err, browser, status) {
-      try{ callback(err,browser,status); }
+      try{
+        if(err)
+          throw err;
+        callback(browser,status);
+      }
       catch(err){
         console.log(err.stack);
       }
