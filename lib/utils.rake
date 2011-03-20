@@ -37,7 +37,7 @@ namespace :util do
             puts "\n  File change detected: #{file}"
             puts "  Time is: #{Time::now}"
 
-            if file =~ /_test\.rb$/ then  #already a test file
+            if file =~ /_test\.rb$|_test\.js$/ then  #already a test file
               keep_searching = false
               run_test_file(file)
             else

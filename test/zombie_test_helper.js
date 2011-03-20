@@ -1,10 +1,9 @@
 zombie = require("zombie");
-// var assert = require("assert");
-
-server = "http://ginesta";
 
 // namespace para el test reporting
 check = {
+  server: "http://ginesta",
+
   passed: 0,
   failed: 0,
   pended: 0,
@@ -55,7 +54,7 @@ check = {
 
   //capturar excepciones y mostrar los errores por consola
   visit: function(browser,url,callback){
-    browser.visit(url, function (err, browser, status) {
+    browser.visit(check.server + url, function (err, browser, status) {
       try{ callback(err,browser,status); }
       catch(err){
         console.log(err.stack);
