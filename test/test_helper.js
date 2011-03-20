@@ -53,7 +53,7 @@ check = {
   },
 
   //capturar excepciones y mostrar los errores por consola
-  visit: function(browser,url,callback){
+  visit: function(url,browser,callback){
     browser.visit(check.server + url, function (err, browser, status) {
       try{ callback(err,browser,status); }
       catch(err){

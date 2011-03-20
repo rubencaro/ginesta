@@ -21,7 +21,7 @@ ENV['RACK_ENV'] = 'test'
 # #Capybara.default_driver = :rack_test
 
 # dummy repo for testing
-REPOS = {
+Git.repos = {
   :dummy => File.dirname(__FILE__) + '/dummy_repo',
 }
 
@@ -35,9 +35,10 @@ class Test::Unit::TestCase
 #   include Capybara
   # Capybara.default_driver = :selenium # <-- use Selenium driver
 
-#   def setup
+  def setup
 #     Capybara.app = Sinatra::Application.new
-#   end
+    build_dummy_repo unless is_dummy_repo?
+  end
 
   def check_is_json
     assert last_response.headers['Content-Type'] =~ /application\/json/
@@ -52,6 +53,27 @@ class Test::Unit::TestCase
 
   def check_redirection
     assert_equal 302,last_response.status
+  end
+
+  def is_dummy_repo?
+    FileTest.exist? "#{File.dirname(__FILE__)}/dummy_repo"
+  end
+
+  def build_dummy_repo
+    clean_dummy_repo
+    system <<-BASH
+      cd #{File.dirname(__FILE__)};
+      mkdir dummy_repo;
+      cd dummy_repo;
+      git init;
+      touch README;
+      git add .;
+      git commit -a -m 'Commit readme';
+      BASH
+  end
+
+  def clean_dummy_repo
+    system "rm -fr #{File.dirname(__FILE__)}/dummy_repo"
   end
 
 end
