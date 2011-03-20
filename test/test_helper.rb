@@ -7,6 +7,8 @@ require 'rack/test'
 
 ENV['RACK_ENV'] = 'test'
 
+system "rm -fr #{File.dirname(__FILE__)}/dummy_repo"
+
 class Test::Unit::TestCase
   include Rack::Test::Methods
 
