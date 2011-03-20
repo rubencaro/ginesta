@@ -93,6 +93,7 @@ namespace :util do
   'rails' or 'r' \t to toggle Rails mode.
   'show' \t to show the options' state.
   'all' or 'a' \t to run all tests now.
+  'js' \t to run all javascript tests now.
   'integration' or 'i' \t to run all integration tests now.
   'last' or 'l' \t to run last test.
   'notify' or 'n' \t to show last test results."
@@ -124,6 +125,9 @@ namespace :util do
     end
     if (opts =~ /\ball\b/i or opts =~ /\ba\b/i) then
       run_all_tests
+    end
+    if (opts =~ /\bjs\b/i) then
+      run_js_tests
     end
     if (opts =~ /\bintegration\b/i or opts =~ /\bi\b/i) then
       run_integration_tests
@@ -159,9 +163,15 @@ namespace :util do
     @orig_dates[file] = File.stat(file).mtime
   end
 
-  def run_test_file(test_file)
+  def run_test_file(test_file, append=false)
     puts "Running #{test_file}..."
-    cmd = "ruby -I test #{test_file} | tee .testing.log"
+    tee = " | tee .testing.log"
+    tee = " | tee -a .testing.log" if append
+    if test_file =~ /.js$/ then
+      cmd = "node #{test_file}" + tee
+    else
+      cmd = "ruby -I test #{test_file}" + tee
+    end
     system(cmd)
     @last = cmd
     notify
@@ -180,11 +190,26 @@ namespace :util do
     puts "\nRunning all tests..."
     if @rails then
       cmd = "rake test | tee .testing.log"
+      system(cmd)
+      @last = cmd
     else
       cmd = "ruby -I test -e 'ARGV.each{|f| load f}' #{@test_list.collect { |fn| "\"#{fn}\"" }.join(' ')} | tee .testing.log"
+      system(cmd)
+      @js_test_list.each do |file|
+        run_test_file file, true
+      end
+      @last = :all
     end
-    system(cmd)
-    @last = cmd
+    notify
+  end
+
+  def run_js_tests
+    puts "\nRunning js tests..."
+    system("rm .testing.log")
+    @js_test_list.each do |file|
+      run_test_file file, true
+    end
+    @last = :js
     notify
   end
 
@@ -205,7 +230,13 @@ namespace :util do
       puts "\nNo test run yet..."
     else
       puts "\nRunning last test..."
-      system(@last)
+      if @last == :all then
+        run_all_tests
+      elsif @last == :js then
+        run_js_tests
+      else
+        system(@last)
+      end
       notify
     end
   end
@@ -223,10 +254,11 @@ namespace :util do
     # the test_list
     @test_list = FileList['test/**/*_test.rb']
     @integration_test_list = FileList['test/integration/**/*_test.rb']
+    @js_test_list = FileList['test/**/*_test.js']
 
     # the file_list
     @file_list = [] if @file_list.nil?
-    @new_file_list = FileList['test/**/*_test.rb'] | FileList['app/**/*.rb']
+    @new_file_list = FileList['test/**/*_test.rb'] | FileList['test/**/*_test.js'] | FileList['app/**/*.rb']
     nuevos = @new_file_list - @file_list
     @file_list = @new_file_list
 
