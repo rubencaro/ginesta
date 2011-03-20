@@ -4,3 +4,4 @@ log/*
 tmp/*
 *.log
 .*.log
+test/dummy_repo/*
