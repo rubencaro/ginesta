@@ -8,13 +8,3 @@ configure do |config|
   config.also_reload "models/*.rb"
 end
 
-require 'logger'
-
-configure do
-  LOGGER = Logger.new(STDOUT)
-end
-
-# definido globalmente, como helper no es suficiente
-def logger
-  LOGGER
-end

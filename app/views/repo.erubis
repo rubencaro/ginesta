@@ -10,4 +10,4 @@
     <li><%= item.name %></li>
   <% end %>
   </ul>
-  <div><%= @repo.tree.contents.inspect %></div>
+  <div><![CDATA[<%= @repo.tree.contents.inspect %>]]></div>

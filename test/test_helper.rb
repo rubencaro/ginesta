@@ -7,7 +7,7 @@ require 'rack/test'
 
 ENV['RACK_ENV'] = 'test'
 
-system "rm -fr #{File.dirname(__FILE__)}/dummy_repo"
+# system "rm -fr #{File.dirname(__FILE__)}/dummy_repo"
 
 class Test::Unit::TestCase
   include Rack::Test::Methods
@@ -17,7 +17,7 @@ class Test::Unit::TestCase
   end
 
   def setup
-    build_dummy_repo unless is_dummy_repo?
+#     build_dummy_repo unless is_dummy_repo?
   end
 
   def check_is_json

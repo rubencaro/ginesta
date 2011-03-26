@@ -52,19 +52,52 @@ check = {
         +'0 notifications');
   },
 
+  clear: function(){
+    check.passed = 0;
+    check.failed = 0;
+    check.pended = 0;
+    check.omitted = 0;
+    check.assertions = 0;
+  },
+
   //capturar excepciones y mostrar los errores por consola
-  visit: function(url,browser,callback){
-    browser.visit(check.server + url, function (err, browser, status) {
+  visit: function(url, callback){
+    zombie.visit(check.server + url,{debug:true}, function (err, browser, status) {
       try{
         if(err)
           throw err;
         callback(browser,status);
+        console.log("Test ended URL:" + url );
       }
-      catch(err){
-        console.log(err.stack);
+      catch(err2){
+        check.failed++;
+        console.log("++++++ Test error URL:" + url );
+        browser.dump();
+        console.log(err2.stack);
       }
-      check.log();
     });
   },
 
+  error: function(err){
+    check.failed++;
+    console.log("++++++ Nodejs error:" + err.stack);
+  },
+
 }
+
+// capturar todo a nivel de sistema y contarlo como fallo
+process.on('uncaughtException',check.error);
+
+// mostrar el log al salir
+process.on('exit',check.log);
+
+// la clase Test
+// function Test(url,browser,callback){
+//   this.url = url;
+//   this.browser = browser;
+//   this.callback = callback;
+//   this.run = function(){
+//     check.visit(this.url,this.browser,this.callback);
+//   }
+// }
+

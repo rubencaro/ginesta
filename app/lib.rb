@@ -11,6 +11,8 @@ end
 
 def show_tree(params)
   @repo = Git.repo(params[:repo])
+  @tree = @repo.tree params[:tree]
+  @commits = @repo.commits params[:tree]
   erubis :tree
 end
 
