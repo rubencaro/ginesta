@@ -4,7 +4,7 @@ zombie = require("zombie");
 check = {
   server: "http://ginesta",
 
-  passed: 0,
+  tests: 0,
   failed: 0,
   pended: 0,
   omitted: 0,
@@ -12,10 +12,7 @@ check = {
 
   ok: function(tested, message){
     check.assertions++;
-    if(tested==true){
-      check.passed++;
-    }
-    else {
+    if(tested!=true){
       check.failed++;
       if(typeof(message)=='undefined')
         message = 'Not true.';
@@ -43,8 +40,8 @@ check = {
 
   //test-unit format
   log: function(){
-    console.log(check.assertions+' tests, '
-        +check.passed+' assertions, '
+    console.log(check.tests+' tests, '
+        +check.assertions+' assertions, '
         +check.failed+' failures, '
         +'0 errors, '
         +check.pended+' pendings, '
@@ -62,6 +59,7 @@ check = {
 
   //capturar excepciones y mostrar los errores por consola
   visit: function(url, callback){
+    check.tests++;
     zombie.visit(check.server + url,{debug:true}, function (err, browser, status) {
       try{
         if(err)
