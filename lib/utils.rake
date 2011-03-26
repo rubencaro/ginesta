@@ -42,16 +42,20 @@ namespace :util do
               run_test_file(file)
             else
               # look for the test file
-              filename = file.gsub('.rb','_test.rb').match(/.+[\/]*.+\/(.+\.rb)/)[1]
+              filenames = []
+              filenames << file.gsub('.rb','_test.rb').match(/.+[\/]*.+\/(.+\.rb)/)[1]
+              filenames << file.gsub('.rb','_test.js').match(/.+[\/]*.+\/(.+\.js)/)[1]
               @test_list.each do |item|
-                if item =~ /#{filename}$/ then
-                  keep_searching = false
-                  run_test_file(item)
-                  break
+                filenames.each do |filename|
+                  if item =~ /#{filename}$/ then
+                    keep_searching = false
+                    run_test_file(item)
+                    break
+                  end
                 end
               end
               if keep_searching then
-                puts "\n  Test File not found: #{filename}"
+                puts "\n  Test File not found: #{filenames.inspect}"
               end
             end
             update_stamp(file)
