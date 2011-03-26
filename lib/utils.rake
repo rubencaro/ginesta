@@ -45,12 +45,13 @@ namespace :util do
               filenames = []
               filenames << file.gsub('.rb','_test.rb').match(/.+[\/]*.+\/(.+\.rb)/)[1]
               filenames << file.gsub('.rb','_test.js').match(/.+[\/]*.+\/(.+\.js)/)[1]
-              @test_list.each do |item|
+              all_tests = @test_list | @js_test_list
+              puts "\nSearching for #{filenames.inspect} inside #{all_tests.inspect}"
+              all_tests.each do |item|
                 filenames.each do |filename|
                   if item =~ /#{filename}$/ then
                     keep_searching = false
                     run_test_file(item)
-                    break
                   end
                 end
               end

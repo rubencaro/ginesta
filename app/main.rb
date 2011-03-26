@@ -8,32 +8,47 @@ require 'erubis'
 require 'env' # some general settings
 require 'devel' if settings.environment == :development # development settings
 require 'git'
-require 'lib'
+require 'router'
 
-get '/' do
-  show_list params
+def show_list(params)
+  erubis :list
 end
 
-get '/:repo' do
-  show_repo params
+def show_repo(params)
+  @repo_name = params[:repo]
+  @repo = Git.repo(@repo_name)
+  @commits = @repo.commits
+  erubis :repo
 end
 
-get '/:repo/tree/:tree' do
-  show_tree params
+def show_tree(params)
+  @repo_name = params[:repo]
+  @repo = Git.repo(@repo_name)
+  @tree = @repo.tree params[:tree]
+  @commits = @repo.commits params[:tree]
+  erubis :tree
 end
 
-get '/:repo/commit/:commit' do
-  show_commit params
+def show_commit(params)
+  @repo_name = params[:repo]
+  @repo = Git.repo(@repo_name)
+  erubis :commit
 end
 
-get '/:repo/blob/:blob' do
-  show_blob params
+def show_blob(params)
+  @repo_name = params[:repo]
+  @repo = Git.repo(@repo_name)
+  erubis :blob
 end
 
-get '/:repo/tag/:tag' do
-  show_tag params
+def show_tag(params)
+  @repo_name = params[:repo]
+  @repo = Git.repo(@repo_name)
+  erubis :tag
 end
 
-get '/:repo/branch/:branch' do
-  show_branch params
+def show_branch(params)
+  @repo_name = params[:repo]
+  @repo = Git.repo(@repo_name)
+  erubis :branch
 end
