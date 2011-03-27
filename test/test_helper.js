@@ -44,8 +44,8 @@ dead = {
       }
       catch(err2){
         dead.failed++;
-        console.log("++++++ Test error URL:" + url );
-        browser.dump();
+        console.log("\n++++++ Test error URL:" + url );
+//         browser.dump();
         console.log(err2.stack);
       }
     });
@@ -103,7 +103,7 @@ Test = function(){
   // comprueba que el css tiene resultados y los devuelve
   this.css = function(selector){
     var elems = this.browser.css(selector);
-    this.ok(elems.length > 0, "Debería contener elementos. selector:'" + selector + "'");
+    this.ok(elems.length > 0, "Debería existir. selector:'" + selector + "'");
     return elems;
   };
 
@@ -118,6 +118,22 @@ Test = function(){
     var content = this.html(selector);
     var patt = new RegExp(text);
     this.ok(patt.test(content),"Debería contener el texto:'" + text + "', selector:'" + selector + "', html: '" + content + "'");
+  };
+
+  // comprueba que existe
+  // y que la primera coincidencia del selector tiene num nodos hijos
+  // si num < 0 o no se define, entonces se comprueba que tenga al menos un hijo
+  this.has_children = function(selector,num){
+    var elem = this.css(selector)[0];
+    var total = elem.childNodes.length;
+    if(typeof(num)=='undefined' || num == null) // por defecto -1
+      num = -1;
+    if(num < 0){  //comprobar si tiene alguno
+      this.ok(total > 0,"Debería contener nodos. selector:'" + selector + "'");
+    }
+    else{
+      this.ok(total == num,"Debería contener '" + num + "' nodos, pero contiene '" + total + "'. selector:'" + selector + "'");
+    }
   };
 
 }

@@ -7,6 +7,7 @@ namespace :util do
     \n'integration_on_success' or 'i' -> runs only integration tests after a succesful test
     \n'rails' or 'r' -> if it runs non-individual tests it does through 'rake test' and company
     \n'on_start' or 'st' -> perform an initial round of tests, if there is a setting about tests on_success it will be used, all tests will be run otherwise
+    \n'restart or 'rst' -> to restart server (touch tmp/restart.txt) before every test round
     \n\nEnter 'help' on the terminal to see interactive commands !!"
   task :monitor, :opts do |t,args|
     parse_args(args)
@@ -36,6 +37,7 @@ namespace :util do
           if @orig_dates[file] != File.stat(file).mtime
             puts "\n  File change detected: #{file}"
             puts "  Time is: #{Time::now}"
+            restart
 
             if file =~ /_test\.rb$|_test\.js$/ then  #already a test file
               keep_searching = false
@@ -101,6 +103,7 @@ namespace :util do
   'js' \t to run all javascript tests now.
   'integration' or 'i' \t to run all integration tests now.
   'last' or 'l' \t to run last test.
+  'restart or 'rst' \t to restart server (touch tmp/restart.txt) before every test round.
   'notify' or 'n' \t to show last test results."
     end
     if (opts =~ /\bshow\b/i) then
@@ -117,6 +120,10 @@ namespace :util do
     if (opts =~ /\bon_success\b/i or opts =~ /\bautos\b/i) then
       @on_success = true
       puts "Changed 'On success' to #{!@on_success.nil?}"
+    end
+    if (opts =~ /\brestart\b/i or opts =~ /\brst\b/i) then
+      @restart = true
+      puts "Changed 'Restart server' to #{!@restart.nil?}"
     end
     if (opts =~ /\bintegration_on_success\b/i or opts =~ /\bautoi\b/i) then
       @integration_on_success = true
@@ -152,6 +159,7 @@ namespace :util do
     opts = args.opts
     @on_start = (opts =~ /\bon_start\b/i or opts =~ /\bst\b/i)
     @on_success = (opts =~ /\bon_success\b/i or opts =~ /\bs\b/i)
+    @restart = (opts =~ /\brestart\b/i or opts =~ /\brst\b/i)
     @integration_on_success = (opts =~ /\bintegration_on_success\b/i or opts =~ /\bi\b/i)
     @on_success = true if @integration_on_success
     @rails = (opts =~ /\brails\b/i or opts =~ /\br\b/i)
@@ -161,6 +169,7 @@ namespace :util do
       On success =#{!@on_success.nil?}
       Integration on success =#{!@integration_on_success.nil?}
       Rails mode =#{!@rails.nil?}
+      Restart server=#{!@restart.nil?}
       "
   end
 
@@ -191,7 +200,15 @@ namespace :util do
     end
   end
 
+  def restart
+    if @restart then
+      puts "  Restarting server before run tests..."
+      system("touch tmp/restart.txt")
+    end
+  end
+
   def run_all_tests
+    restart
     puts "\nRunning all tests..."
     if @rails then
       cmd = "rake test | tee .testing.log"
@@ -209,6 +226,7 @@ namespace :util do
   end
 
   def run_js_tests
+    restart
     puts "\nRunning js tests..."
     system("rm .testing.log")
     @js_test_list.each do |file|
@@ -219,6 +237,7 @@ namespace :util do
   end
 
   def run_integration_tests
+    restart
     puts "\nRunning integration tests..."
     if @rails then
       cmd = "rake test:integration | tee .testing.log"
@@ -234,6 +253,7 @@ namespace :util do
     if @last.nil? then
       puts "\nNo test run yet..."
     else
+      restart
       puts "\nRunning last test..."
       if @last == :all then
         run_all_tests

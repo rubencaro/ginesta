@@ -18,6 +18,7 @@ def show_repo(params)
   @repo_name = params[:repo]
   @repo = Git.repo(@repo_name)
   @commits = @repo.commits
+  @tree = @repo.tree
   erubis :repo
 end
 
@@ -50,5 +51,6 @@ end
 def show_branch(params)
   @repo_name = params[:repo]
   @repo = Git.repo(@repo_name)
+  @commits = @repo.commits params[:branch]
   erubis :branch
 end

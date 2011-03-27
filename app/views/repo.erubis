@@ -1,12 +1,14 @@
 
   <h1><%= @repo_name %></h1>
-  <ul>
+  <h2>Commits</h2>
+  <ul id='commits'>
   <% @commits.each do |commit| %>
     <li><%= commit.message %></li>
   <% end %>
   </ul>
-  <ul>
-  <% @repo.tree.contents.each do |item| %>
+  <h2>Tree</h2>
+  <ul id='tree'>
+  <% @tree.contents.each do |item| %>
     <li><%= item.name %></li>
   <% end %>
   </ul>
