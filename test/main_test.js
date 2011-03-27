@@ -6,7 +6,7 @@ require('./test_helper');
 
 Test.prototype.cabecera = function(){
   // la cabecera existe y dice el nombre del repo
-  this.contains('h1','dummy');
+  this.contains('h1 a','dummy');
 };
 
 Test.prototype.commits = function(num_children){
@@ -35,6 +35,15 @@ dead.visit("/dummy", function (test) {
   test.cabecera();
   test.commits();
   test.tree();
+
+  // vamos a un commit
+  test.click_link('Add README',function(){
+    test.status_ok();
+    // y volvemos
+    test.click_link('h1 a',function(){
+      test.status_ok();
+    });
+  });
 });
 
 dead.visit("/dummy/tree/master", function (test) {

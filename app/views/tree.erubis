@@ -1,2 +1,2 @@
-  <h1><%= @repo_name %></h1>
+  <%= partial :repo %>
   <%= partial :tree %>

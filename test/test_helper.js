@@ -134,6 +134,10 @@ Test = function(){
     }
   };
 
+  this.click_link = function(selector,callback){
+    this.browser.clickLink(selector,callback);
+  };
+
 }
 
 
