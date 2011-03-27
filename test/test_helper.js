@@ -55,8 +55,6 @@ dead = {
     dead.errors++;
     console.log("++++++ Nodejs error:" + err.stack);
   },
-
-
 }
 
 // capturar todo a nivel de sistema y contarlo como fallo

@@ -14,6 +14,8 @@ Test.prototype.commits = function(num_children){
   this.contains('h2','Commits');
   // la lista también existe y tiene num nodos
   this.has_children('ul#commits',num_children);
+  // la lista tiene enlaces
+  this.css('ul#commits li a');
 };
 
 Test.prototype.tree = function(){
