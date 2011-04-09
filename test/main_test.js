@@ -55,6 +55,10 @@ dead.visit("/dummy/tree/master", function (test) {
 dead.visit("/dummy/commit/93501210aba004961d71606ca3a5d350dcfcdff5", function (test) {
   test.status_ok();
   test.cabecera();
+  // la sección existe
+  test.css('h2');
+  // tiene el diff con algún elemento
+  test.has_children('ul#diff');
 });
 
 dead.visit("/dummy/tag/b7f05c5af257179b345365e6e0a446699096fa9e", function (test) {

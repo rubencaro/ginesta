@@ -33,6 +33,7 @@ end
 def show_commit(params)
   @repo_name = params[:repo]
   @repo = Git.repo(@repo_name)
+  @commit = @repo.commits(params[:commit]).first
   erubis :commit
 end
 

@@ -8,6 +8,7 @@ namespace :util do
     \n'rails' or 'r' -> if it runs non-individual tests it does through 'rake test' and company
     \n'on_start' or 'st' -> perform an initial round of tests, if there is a setting about tests on_success it will be used, all tests will be run otherwise
     \n'restart or 'rst' -> to restart server (touch tmp/restart.txt) before every test round
+    \n'frenzy or 'f' -> to fire all tests on every file change
     \n\nEnter 'help' on the terminal to see interactive commands !!"
   task :monitor, :opts do |t,args|
     parse_args(args)
@@ -43,22 +44,28 @@ namespace :util do
               keep_searching = false
               run_test_file(file)
             else
-              # look for the test file
-              filenames = []
-              filenames << file.gsub('.rb','_test.rb').match(/.+[\/]*.+\/(.+\.rb)/)[1]
-              filenames << file.gsub('.rb','_test.js').match(/.+[\/]*.+\/(.+\.js)/)[1]
-              all_tests = @test_list | @js_test_list
-              puts "\nSearching for #{filenames.inspect} inside #{all_tests.inspect}"
-              all_tests.each do |item|
-                filenames.each do |filename|
-                  if item =~ /#{filename}$/ then
-                    keep_searching = false
-                    run_test_file(item)
+              # frenzy mode ?
+              if @frenzy then
+                keep_searching = false
+                run_all_tests false
+              else
+                # look for the test file
+                filenames = []
+                filenames << file.gsub('.rb','_test.rb').match(/.+[\/]*.+\/(.+\.rb)/)[1]
+                filenames << file.gsub('.rb','_test.js').match(/.+[\/]*.+\/(.+\.js)/)[1]
+                all_tests = @test_list | @js_test_list
+                puts "\nSearching for #{filenames.inspect} inside #{all_tests.inspect}"
+                all_tests.each do |item|
+                  filenames.each do |filename|
+                    if item =~ /#{filename}$/ then
+                      keep_searching = false
+                      run_test_file(item)
+                    end
                   end
                 end
-              end
-              if keep_searching then
-                puts "\n  Test File not found: #{filenames.inspect}"
+                if keep_searching then
+                  puts "\n  Test File not found: #{filenames.inspect}"
+                end
               end
             end
             update_stamp(file)
@@ -104,6 +111,7 @@ namespace :util do
   'integration' or 'i' \t to run all integration tests now.
   'last' or 'l' \t to run last test.
   'restart or 'rst' \t to restart server (touch tmp/restart.txt) before every test round.
+  'frenzy or 'f' \t to to fire all tests on every file change.
   'notify' or 'n' \t to show last test results."
     end
     if (opts =~ /\bshow\b/i) then
@@ -124,6 +132,10 @@ namespace :util do
     if (opts =~ /\brestart\b/i or opts =~ /\brst\b/i) then
       @restart = true
       puts "Changed 'Restart server' to #{!@restart.nil?}"
+    end
+    if (opts =~ /\bfrenzy\b/i or opts =~ /\bf\b/i) then
+      @frenzy = true
+      puts "Changed 'Frenzy mode' to #{!@frenzy.nil?}"
     end
     if (opts =~ /\bintegration_on_success\b/i or opts =~ /\bautoi\b/i) then
       @integration_on_success = true
@@ -160,6 +172,7 @@ namespace :util do
     @on_start = (opts =~ /\bon_start\b/i or opts =~ /\bst\b/i)
     @on_success = (opts =~ /\bon_success\b/i or opts =~ /\bs\b/i)
     @restart = (opts =~ /\brestart\b/i or opts =~ /\brst\b/i)
+    @frenzy = (opts =~ /\bfrenzy\b/i or opts =~ /\bf\b/i)
     @integration_on_success = (opts =~ /\bintegration_on_success\b/i or opts =~ /\bi\b/i)
     @on_success = true if @integration_on_success
     @rails = (opts =~ /\brails\b/i or opts =~ /\br\b/i)
@@ -170,6 +183,7 @@ namespace :util do
       Integration on success =#{!@integration_on_success.nil?}
       Rails mode =#{!@rails.nil?}
       Restart server=#{!@restart.nil?}
+      Frenzy mode=#{!@frenzy.nil?}
       "
   end
 
@@ -207,8 +221,8 @@ namespace :util do
     end
   end
 
-  def run_all_tests
-    restart
+  def run_all_tests(do_restart=true)
+    restart if do_restart
     puts "\nRunning all tests..."
     if @rails then
       cmd = "rake test | tee .testing.log"
@@ -284,6 +298,9 @@ namespace :util do
     # the file_list
     @file_list = [] if @file_list.nil?
     @new_file_list = FileList['test/**/*_test.rb'] | FileList['test/**/*_test.js'] | FileList['app/**/*.rb']
+    if @frenzy then
+      @new_file_list = @new_file_list | FileList['config/**/*.rb'] | FileList['app/**/*.html.erb'] | FileList['app/**/*.erubis']
+    end
     nuevos = @new_file_list - @file_list
     @file_list = @new_file_list
 

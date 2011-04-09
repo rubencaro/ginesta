@@ -1,1 +1,14 @@
 <%= partial :repo %>
+
+<h2><%= @commit.id %></h2>
+<ul id="diff">
+<% @commit.diffs.each do |item|  %>
+  <li><h4><%= item.a_path %></h4>
+    <ul>
+    <% item.diff.split("\n").each do |line| %>
+      <li><%= line %></li>
+    <% end %>
+    </ul>
+  </li>
+<% end %>
+</ul>
