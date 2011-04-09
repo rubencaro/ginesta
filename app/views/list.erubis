@@ -1,6 +1,6 @@
 <dl>
 <% Git.repos.each do |key,value| %>
-  <dt><%= key.to_s %></dt>
+  <dt><a href="/<%= key.to_s %>"><%= key.to_s %></a></dt>
   <dd><%= value.to_s %></dd>
 <% end %>
 </dl>

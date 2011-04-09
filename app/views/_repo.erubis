@@ -1,1 +1,1 @@
-  <h1><a href="/<%= @repo_name %>"><%= @repo_name %></a></h1>
+  <h1><a href="/">repos</a> -> <a href="/<%= @repo_name %>"><%= @repo_name %></a></h1>

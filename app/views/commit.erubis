@@ -1,6 +1,7 @@
 <%= partial :repo %>
 
 <h2><%= @commit.id %></h2>
+<p><%= @commit.message %></p>
 <ul id="diff">
 <% @commit.diffs.each do |item|  %>
   <li><h4><%= item.a_path %></h4>
