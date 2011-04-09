@@ -4,6 +4,7 @@
 <ul id="diff">
 <% @commit.diffs.each do |item|  %>
   <li><h4><%= item.a_path %></h4>
+    <% next if item.b_path =~ /.zip$|.gz$|.tar$|.rar$|.bz2$|.png$|.gif$|.jpg$/ %>
     <ul>
     <% item.diff.split("\n").each do |line| %>
       <%
