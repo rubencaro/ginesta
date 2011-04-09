@@ -6,3 +6,15 @@ h1 {
 h2 {
   font-size:1em;
 }
+
+.added {
+  color:green;
+}
+
+.removed {
+  color:red;
+}
+
+#diff ul {
+  list-style:none;
+}

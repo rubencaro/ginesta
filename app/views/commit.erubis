@@ -6,7 +6,18 @@
   <li><h4><%= item.a_path %></h4>
     <ul>
     <% item.diff.split("\n").each do |line| %>
-      <li><%= line %></li>
+      <%
+      cls = ''
+      if line =~ /^\+/ then
+        cls = 'added'
+      elsif line =~ /^-/ then
+        cls = 'removed'
+      end
+      %>
+      <% if line.strip =~ /^@@.+@@$/ then %>
+        <li>&nbsp;</li>
+      <% end %>
+      <li class="<%= cls %>"><%= Rack::Utils.escape_html line %></li>
     <% end %>
     </ul>
   </li>
